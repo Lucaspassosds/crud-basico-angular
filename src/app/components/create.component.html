@@ -1,0 +1,52 @@
+<div style="margin-top: 10px">
+  <h3 align="center">{{ pessoa ? 'Alterar' : 'Adicionar'}} Pessoa</h3>
+  <div *ngIf="aparecerMsg" class="success-box">
+    <p class="success-text">
+        A pessoa {{ nomeAntigo }} foi adicionada com
+        sucesso!
+    </p>
+    <div class="close" (click)="sumirMsg()"></div>
+  </div>
+  <form [formGroup]="pessoaForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>Nome: </label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="nome"
+      />
+    </div>
+    <div class="form-group">
+      <label>Telefone: </label>
+      <input
+        type="tel"
+        class="form-control"
+        formControlName="telefone"
+        placeholder="(DDD)9XXXX-XXXX"
+        mask="(00) 00000-9999"
+      />
+    </div>
+    <div class="form-group">
+      <label>Numero do CPF: </label>
+      <input
+        type="tel"
+        class="form-control"
+        formControlName="cpf"
+        placeholder="XXX.XXX.XXX-XX"
+        mask="000.000.000-99"
+      />
+    </div>
+    <div class="form-group">
+      <label>Cursos: </label>
+      <ul>
+        <li *ngFor="let curso of cursos">
+          <input (click)="selecionarCurso(curso)" id="{{ curso.id }}" type="checkbox" value="{{ curso.nome }}" [checked]="verificarCurso(curso)"/>
+          {{ curso.nome }}
+        </li>
+      </ul>
+    </div>
+    <div class="form-group">
+      <input type="submit" value="{{ pessoa ? 'Atualizar' : 'Adicionar'}}" class="btn btn-primary" />
+    </div>
+  </form>
+</div>

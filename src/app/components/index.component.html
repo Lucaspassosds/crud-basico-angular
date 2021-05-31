@@ -1,0 +1,28 @@
+<div>
+  <h3 align="center">Lista de Pessoas</h3>
+  <table class="table table-striped" style="margin-top: 20px">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Telefone</th>
+        <th>Número do CPF</th>
+        <th colSpan="2"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let pessoa of pessoas">
+        <ng-container *ngIf="!pessoa.isDeleted">
+          <td>{{ pessoa.nome }}</td>
+          <td>{{ pessoa.telefone }}</td>
+          <td>{{ pessoa.cpf }}</td>
+          <td>
+            <button (click)="onEditarClick(pessoa)" class="btn btn-primary"> Editar </button>
+          </td>
+          <td>
+            <button (click)="onDeletarClick(pessoa, $event)" class="btn btn-danger">Deletar</button>
+          </td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+</div>
