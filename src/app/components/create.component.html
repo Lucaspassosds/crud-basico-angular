@@ -2,7 +2,7 @@
   <h3 align="center">{{ pessoa ? 'Alterar' : 'Adicionar'}} Pessoa</h3>
   <div *ngIf="aparecerMsg" class="success-box">
     <p class="success-text">
-        A pessoa {{ nomeAntigo }} foi adicionada com
+        A pessoa {{ nomeAntigo }} foi {{ pessoa ? 'alterada' : 'adicionada'}} com
         sucesso!
     </p>
     <div class="close" (click)="sumirMsg()"></div>

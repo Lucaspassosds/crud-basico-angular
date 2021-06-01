@@ -9,6 +9,8 @@ import { IndexComponent } from './components/index.component';
 import { CreateComponent } from './components/create.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { IndexService } from './services/index.service';
+import { CreateService } from './services/create.service';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 @NgModule({
@@ -25,7 +27,10 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     ReactiveFormsModule,
     NgxMaskModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    IndexService,
+    CreateService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

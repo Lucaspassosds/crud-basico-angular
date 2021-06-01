@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { Pessoa } from "../models/models";
 import { Router } from "@angular/router";
 import { formataCPF, formataTelefone } from "../utils/utils";
+import { IndexService } from "../services/index.service";
 
 @Component({
   selector: "app-index",
@@ -10,31 +11,32 @@ import { formataCPF, formataTelefone } from "../utils/utils";
   styleUrls: ["./index.component.css"],
 })
 export class IndexComponent implements OnInit {
-  readonly apiURL: string;
   pessoas: Pessoa[] = [];
   filterPessoas: Pessoa[];
 
-  constructor(private http: HttpClient, private router: Router) {
-    this.apiURL = "http://localhost:8080/api";
+  constructor(private service : IndexService ,private router: Router) {
+  }
+
+  ngOnInit() {
     this.listarPessoas();
   }
 
-  ngOnInit() {}
-
   onEditarClick(pessoa: Pessoa) {
+    pessoa.telefone = pessoa.telefone.replace(/\D/g,'');
+    pessoa.cpf = pessoa.cpf.replace(/\D/g,'');
     sessionStorage.setItem("pessoa_" + pessoa.id, JSON.stringify(pessoa));
     this.router.navigate(["/add", pessoa.id]);
   }
 
   onDeletarClick(pessoa: Pessoa) {
-    this.http.delete(`${this.apiURL}/pessoa/${pessoa.id}`).subscribe((res) => {
+    this.service.deletar(pessoa.id).subscribe((res) => {
       console.log(res);
       pessoa.isDeleted = true;
     });
   }
 
   listarPessoas() {
-    this.http.get(`${this.apiURL}/pessoas`).subscribe((res) => {
+    this.service.listar().subscribe((res) => {
       Object.values(res).forEach((pessoa: Pessoa) => {
         const { cpf, telefone } = pessoa;
         pessoa.cpf = formataCPF(cpf);

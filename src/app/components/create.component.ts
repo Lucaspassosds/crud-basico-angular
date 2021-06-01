@@ -1,8 +1,11 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
+import { of } from "rxjs/observable/of";
+import { catchError } from "rxjs/operators";
 import { Curso, Pessoa } from "../models/models";
+import { CreateService } from "../services/create.service";
 import { validaCpf, validaTelefone } from "../utils/utils";
 
 @Component({
@@ -11,7 +14,6 @@ import { validaCpf, validaTelefone } from "../utils/utils";
   styleUrls: ["./create.component.css"],
 })
 export class CreateComponent implements OnInit {
-  readonly apiURL: string;
   cursos: Curso[] = [];
   cursosSelecionados: Set<Curso> = new Set();
   pessoa: Pessoa;
@@ -20,12 +22,14 @@ export class CreateComponent implements OnInit {
     telefone: new FormControl(""),
     cpf: new FormControl(""),
   });
-  nomeAntigo : string;
-  aparecerMsg : boolean;
+  nomeAntigo: string;
+  aparecerMsg: boolean;
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) {
-    this.apiURL = "http://localhost:8080/api";
+  constructor(private service: CreateService, private route: ActivatedRoute) {
     this.aparecerMsg = false;
+  }
+
+  ngOnInit() {
     this.getCursos();
     const id = this.route.snapshot.paramMap.get("id");
     if (id) {
@@ -41,53 +45,64 @@ export class CreateComponent implements OnInit {
     }
   }
 
-  ngOnInit() {}
-
   onSubmit() {
+    console.log(this.pessoaForm.getRawValue());
     const { nome, telefone, cpf } = this.pessoaForm.getRawValue();
-    if(!validaTelefone(telefone)){
-      return alert('Telefone inválido!');
+    if (!validaTelefone(telefone)) {
+      return alert("Telefone inválido!");
     }
-    if(!validaCpf(cpf)){
-      return alert('CPF Inválido!');
+    if (!validaCpf(cpf)) {
+      return alert("CPF Inválido!");
     }
     const cursosPessoa = Array.from(this.cursosSelecionados);
-    this.nomeAntigo = nome;
-    this.pessoaForm.reset();
-    this.cursosSelecionados.clear();
     if (this.pessoa) {
       const { id } = this.pessoa;
-      return this.http
-        .put(`${this.apiURL}/pessoa`, {
-          id,
-          nome,
-          telefone,
-          cpf,
-          cursos: cursosPessoa,
-        })
-        .subscribe((pessoa) => {
-          console.log(pessoa);
-          sessionStorage.setItem('pessoa_' + id, JSON.stringify(pessoa));
-          this.aparecerMsg = true;
-        });
-    }
-    return this.http
-      .post(`${this.apiURL}/pessoa`, {
+      const data = {
+        id,
         nome,
         telefone,
         cpf,
         cursos: cursosPessoa,
-      })
-      .subscribe((pessoa) => {
+      };
+      return this.service.atualizar(data).subscribe((pessoa) => {
         console.log(pessoa);
-        const { id } : any = pessoa;
-        sessionStorage.setItem('pessoa_' + id, JSON.stringify(pessoa));
+        sessionStorage.setItem("pessoa_" + id, JSON.stringify(pessoa));
+        this.nomeAntigo = nome;
+        this.aparecerMsg = true;
+      });
+    }
+    const data = {
+      nome,
+      telefone,
+      cpf,
+      cursos: cursosPessoa,
+    };
+    return this.service
+      .criar(data)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 400) {
+            alert(error.error.message);
+          }
+          return of([]);
+        })
+      )
+      .subscribe((pessoa) => {
+        if (JSON.stringify(pessoa) === "[]") {
+          return;
+        }
+        console.log(pessoa);
+        const { id }: any = pessoa;
+        sessionStorage.setItem("pessoa_" + id, JSON.stringify(pessoa));
+        this.nomeAntigo = nome;
+        this.pessoaForm.reset();
+        this.cursosSelecionados.clear();
         this.aparecerMsg = true;
       });
   }
 
   getCursos() {
-    this.http.get(`${this.apiURL}/cursos`).subscribe((res) => {
+    this.service.listar().subscribe((res) => {
       Object.values(res).forEach((pessoa) => this.cursos.push(pessoa));
     });
   }
@@ -96,14 +111,16 @@ export class CreateComponent implements OnInit {
     if (!this.cursosSelecionados.has(curso)) {
       return this.cursosSelecionados.add(curso);
     }
-    return this.cursosSelecionados.delete(curso);
+    this.cursosSelecionados.delete(curso);
   }
 
-  verificarCurso(curso : Curso) : boolean{
-    return Array.from(this.cursosSelecionados).some(val => val.nome === curso.nome);
+  verificarCurso(curso: Curso): boolean {
+    return Array.from(this.cursosSelecionados).some(
+      (val) => val.nome === curso.nome
+    );
   }
 
-  sumirMsg(){
+  sumirMsg() {
     this.aparecerMsg = false;
   }
 }
