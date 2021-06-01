@@ -21,7 +21,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let pessoa of filterPessoas">
+      <tr *ngFor="let pessoa of filterPessoas | paginate : { itemsPerPage: 6, currentPage: page }">
         <ng-container *ngIf="!pessoa.isDeleted">
           <td>{{ pessoa.nome }}</td>
           <td>{{ pessoa.telefone }}</td>
@@ -40,4 +40,5 @@
       </tr>
     </tbody>
   </table>
+  <pagination-controls (pageChange)="page = $event" previousLabel="Anterior" nextLabel="Próximo" ></pagination-controls>
 </div>

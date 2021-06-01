@@ -13,8 +13,10 @@ import { IndexService } from "../services/index.service";
 export class IndexComponent implements OnInit {
   pessoas: Pessoa[] = [];
   filterPessoas: Pessoa[];
+  page : number;
 
   constructor(private service : IndexService ,private router: Router) {
+    this.page = 1;
   }
 
   ngOnInit() {
