@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { Curso, Pessoa } from "../models/models";
+import { validaCpf, validaTelefone } from "../utils/utils";
 
 @Component({
   selector: "app-create",
@@ -44,6 +45,12 @@ export class CreateComponent implements OnInit {
 
   onSubmit() {
     const { nome, telefone, cpf } = this.pessoaForm.getRawValue();
+    if(!validaTelefone(telefone)){
+      return alert('Telefone inválido!');
+    }
+    if(!validaCpf(cpf)){
+      return alert('CPF Inválido!');
+    }
     const cursosPessoa = Array.from(this.cursosSelecionados);
     this.nomeAntigo = nome;
     this.pessoaForm.reset();
