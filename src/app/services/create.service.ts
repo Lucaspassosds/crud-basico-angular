@@ -1,11 +1,21 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { EventEmitter } from "events";
+import { BehaviorSubject } from "rxjs";
 
 @Injectable()
 export class CreateService {
   readonly apiURL: string;
+
+  private currentPessoa = new BehaviorSubject('');
+  sharedMessage = this.currentPessoa.asObservable();
+
   constructor(private http: HttpClient) {
     this.apiURL = "http://localhost:8080/api";
+  }
+
+  setPessoa(msg : string){
+    this.currentPessoa.next(msg);
   }
 
   listar(){

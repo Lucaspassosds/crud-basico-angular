@@ -12,13 +12,19 @@ import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { IndexService } from './services/index.service';
 import { CreateService } from './services/create.service';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { ModalDialogModule } from 'ngx-modal-dialog';
+import { ModalComponent } from './components/modal.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 @NgModule({
   declarations: [
     AppComponent,
     IndexComponent,
-    CreateComponent
+    CreateComponent,
+    ModalComponent
+  ],
+  entryComponents: [
+    ModalComponent
   ],
   imports: [
     BrowserModule,
@@ -27,7 +33,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     FormsModule,
     ReactiveFormsModule,
     NgxMaskModule.forRoot(),
-    NgxPaginationModule
+    NgxPaginationModule,
+    ModalDialogModule.forRoot()
   ],
   providers: [
     IndexService,

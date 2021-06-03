@@ -1,9 +1,12 @@
 import { HttpClient } from "@angular/common/http";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewContainerRef } from "@angular/core";
 import { Pessoa } from "../models/models";
 import { Router } from "@angular/router";
 import { formataCPF, formataTelefone } from "../utils/utils";
 import { IndexService } from "../services/index.service";
+import { CreateService } from "../services/create.service";
+import { ModalDialogService } from "ngx-modal-dialog";
+import { ModalComponent } from './modal.component';
 
 @Component({
   selector: "app-index",
@@ -13,9 +16,15 @@ import { IndexService } from "../services/index.service";
 export class IndexComponent implements OnInit {
   pessoas: Pessoa[] = [];
   filterPessoas: Pessoa[];
-  page : number;
+  page: number;
 
-  constructor(private service : IndexService ,private router: Router) {
+  constructor(
+    private create: CreateService,
+    private service: IndexService,
+    private router: Router,
+    private modalService : ModalDialogService,
+    private viewRef : ViewContainerRef
+  ) {
     this.page = 1;
   }
 
@@ -24,9 +33,9 @@ export class IndexComponent implements OnInit {
   }
 
   onEditarClick(pessoa: Pessoa) {
-    pessoa.telefone = pessoa.telefone.replace(/\D/g,'');
-    pessoa.cpf = pessoa.cpf.replace(/\D/g,'');
-    sessionStorage.setItem("pessoa_" + pessoa.id, JSON.stringify(pessoa));
+    pessoa.telefone = pessoa.telefone.replace(/\D/g, "");
+    pessoa.cpf = pessoa.cpf.replace(/\D/g, "");
+    this.create.setPessoa(JSON.stringify(pessoa));
     this.router.navigate(["/add", pessoa.id]);
   }
 
@@ -61,5 +70,19 @@ export class IndexComponent implements OnInit {
         pessoa.cpf.toLowerCase().includes(value) ||
         pessoa.telefone.toLowerCase().includes(value)
     );
+  }
+  
+  openDeletarDialog(pessoa : Pessoa) {
+    this.modalService.openDialog(this.viewRef, {
+      title: `Tem certeza de que deseja deletar a pessoa ${pessoa.nome}?`,
+      childComponent: ModalComponent,
+      actionButtons : [
+        { text: 'Cancelar' }, // no special processing here
+        { text: 'Deletar', onAction: () => {
+          this.onDeletarClick(pessoa);
+          return true;
+        }, buttonClass: 'btn btn-danger' },
+      ],
+    });
   }
 }

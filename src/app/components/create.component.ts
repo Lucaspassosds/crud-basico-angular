@@ -24,16 +24,18 @@ export class CreateComponent implements OnInit {
   });
   nomeAntigo: string;
   aparecerMsg: boolean;
+  message: string;
 
   constructor(private service: CreateService, private route: ActivatedRoute) {
     this.aparecerMsg = false;
   }
-
+  
   ngOnInit() {
+    this.service.sharedMessage.subscribe(msg => this.message = msg);
     this.getCursos();
     const id = this.route.snapshot.paramMap.get("id");
     if (id) {
-      this.pessoa = JSON.parse(sessionStorage.getItem("pessoa_" + id));
+      this.service.sharedMessage.subscribe(pessoa => this.pessoa = JSON.parse(pessoa));
       console.log(this.pessoa);
       this.cursosSelecionados = new Set(this.pessoa.cursos);
       this.pessoaForm.patchValue({
