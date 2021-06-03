@@ -1,20 +1,16 @@
 <div style="margin-top: 10px">
-  <h3 align="center">{{ pessoa ? 'Alterar' : 'Adicionar'}} Pessoa</h3>
+  <h3 align="center">{{ pessoa ? "Alterar" : "Adicionar" }} Pessoa</h3>
   <div *ngIf="aparecerMsg" class="success-box">
     <p class="success-text">
-        A pessoa {{ nomeAntigo }} foi {{ pessoa ? 'alterada' : 'adicionada'}} com
-        sucesso!
+      A pessoa {{ nomeAntigo }} foi {{ pessoa ? "alterada" : "adicionada" }} com
+      sucesso!
     </p>
     <div class="close" (click)="sumirMsg()"></div>
   </div>
   <form [formGroup]="pessoaForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
       <label>Nome: </label>
-      <input
-        type="text"
-        class="form-control"
-        formControlName="nome"
-      />
+      <input type="text" class="form-control" formControlName="nome" required />
     </div>
     <div class="form-group">
       <label>Telefone: </label>
@@ -24,7 +20,16 @@
         formControlName="telefone"
         placeholder="(DDD)9XXXX-XXXX"
         mask="(00) 00000-0000"
+        required
       />
+      <span
+        *ngIf="
+          !pessoaForm.get('telefone').valid &&
+          pessoaForm.get('telefone').touched
+        "
+        class="badge badge-warning"
+        >Telefone Inválido!</span
+      >
     </div>
     <div class="form-group">
       <label>Numero do CPF: </label>
@@ -34,19 +39,35 @@
         formControlName="cpf"
         placeholder="XXX.XXX.XXX-XX"
         mask="000.000.000-00"
+        required
       />
+      <span
+        *ngIf="!pessoaForm.get('cpf').valid"
+        class="badge badge-warning"
+        >CPF Inválido!</span
+      >
     </div>
     <div class="form-group">
       <label>Cursos: </label>
       <ul>
         <li *ngFor="let curso of cursos">
-          <input (click)="selecionarCurso(curso)" id="{{ curso.id }}" type="checkbox" value="{{ curso.nome }}" [checked]="verificarCurso(curso)"/>
+          <input
+            (click)="selecionarCurso(curso)"
+            [id]="curso.id"
+            type="checkbox"
+            [value]="curso.nome"
+            [checked]="verificarCurso(curso)"
+          />
           {{ curso.nome }}
         </li>
       </ul>
     </div>
     <div class="form-group">
-      <input type="submit" value="{{ pessoa ? 'Atualizar' : 'Adicionar'}}" class="btn btn-primary" />
+      <input
+        type="submit"
+        [value]="pessoa ? 'Atualizar' : 'Adicionar'"
+        class="btn btn-primary"
+      />
     </div>
   </form>
 </div>

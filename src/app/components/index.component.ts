@@ -6,7 +6,7 @@ import { formataCPF, formataTelefone } from "../utils/utils";
 import { IndexService } from "../services/index.service";
 import { CreateService } from "../services/create.service";
 import { ModalDialogService } from "ngx-modal-dialog";
-import { ModalComponent } from './modal.component';
+import { ModalComponent } from "./modal.component";
 
 @Component({
   selector: "app-index",
@@ -14,7 +14,7 @@ import { ModalComponent } from './modal.component';
   styleUrls: ["./index.component.css"],
 })
 export class IndexComponent implements OnInit {
-  pessoas: Pessoa[] = [];
+  pessoas: Pessoa[];
   filterPessoas: Pessoa[];
   page: number;
 
@@ -22,10 +22,11 @@ export class IndexComponent implements OnInit {
     private create: CreateService,
     private service: IndexService,
     private router: Router,
-    private modalService : ModalDialogService,
-    private viewRef : ViewContainerRef
+    private modalService: ModalDialogService,
+    private viewRef: ViewContainerRef
   ) {
     this.page = 1;
+    this.pessoas = [];
   }
 
   ngOnInit() {
@@ -71,17 +72,21 @@ export class IndexComponent implements OnInit {
         pessoa.telefone.toLowerCase().includes(value)
     );
   }
-  
-  openDeletarDialog(pessoa : Pessoa) {
+
+  openDeletarDialog(pessoa: Pessoa) {
     this.modalService.openDialog(this.viewRef, {
       title: `Tem certeza de que deseja deletar a pessoa ${pessoa.nome}?`,
       childComponent: ModalComponent,
-      actionButtons : [
-        { text: 'Cancelar' }, // no special processing here
-        { text: 'Deletar', onAction: () => {
-          this.onDeletarClick(pessoa);
-          return true;
-        }, buttonClass: 'btn btn-danger' },
+      actionButtons: [
+        { text: "Cancelar" }, // no special processing here
+        {
+          text: "Deletar",
+          onAction: () => {
+            this.onDeletarClick(pessoa);
+            return true;
+          },
+          buttonClass: "btn btn-danger",
+        },
       ],
     });
   }

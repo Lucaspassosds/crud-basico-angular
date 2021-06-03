@@ -1,7 +1,8 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { Component, OnInit } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
+import { Subscription } from "rxjs";
 import { of } from "rxjs/observable/of";
 import { catchError } from "rxjs/operators";
 import { Curso, Pessoa } from "../models/models";
@@ -13,29 +14,34 @@ import { validaCpf, validaTelefone } from "../utils/utils";
   templateUrl: "./create.component.html",
   styleUrls: ["./create.component.css"],
 })
-export class CreateComponent implements OnInit {
-  cursos: Curso[] = [];
-  cursosSelecionados: Set<Curso> = new Set();
+export class CreateComponent implements OnInit, OnDestroy {
+  cursos: Curso[];
+  cursosSelecionados: Set<Curso>;
   pessoa: Pessoa;
-  pessoaForm = new FormGroup({
-    nome: new FormControl(""),
-    telefone: new FormControl(""),
-    cpf: new FormControl(""),
-  });
+  pessoaForm : FormGroup;
   nomeAntigo: string;
   aparecerMsg: boolean;
   message: string;
+  pessoaSubscription: Subscription;
 
   constructor(private service: CreateService, private route: ActivatedRoute) {
     this.aparecerMsg = false;
+    this.cursos = [];
+    this.cursosSelecionados  = new Set();
+    this.pessoaForm = new FormGroup({
+      nome: new FormControl("", Validators.required),
+      telefone: new FormControl("", [Validators.required, this.verificarTel.bind(this)]),
+      cpf: new FormControl("", [Validators.required, this.verificarCpf.bind(this)]),
+    });
   }
-  
+
   ngOnInit() {
-    this.service.sharedMessage.subscribe(msg => this.message = msg);
     this.getCursos();
     const id = this.route.snapshot.paramMap.get("id");
     if (id) {
-      this.service.sharedMessage.subscribe(pessoa => this.pessoa = JSON.parse(pessoa));
+      this.pessoaSubscription = this.service.sharedPessoa.subscribe(
+        (pessoa) => (this.pessoa = JSON.parse(pessoa))
+      );
       console.log(this.pessoa);
       this.cursosSelecionados = new Set(this.pessoa.cursos);
       this.pessoaForm.patchValue({
@@ -46,16 +52,15 @@ export class CreateComponent implements OnInit {
       });
     }
   }
+  ngOnDestroy() {
+    if(this.pessoaSubscription)
+    this.pessoaSubscription.unsubscribe();
+  }
 
   onSubmit() {
     console.log(this.pessoaForm.getRawValue());
     const { nome, telefone, cpf } = this.pessoaForm.getRawValue();
-    if (!validaTelefone(telefone)) {
-      return alert("Telefone inválido!");
-    }
-    if (!validaCpf(cpf)) {
-      return alert("CPF Inválido!");
-    }
+    if(nome == '' || telefone == '' || cpf == '') return;
     const cursosPessoa = Array.from(this.cursosSelecionados);
     if (this.pessoa) {
       const { id } = this.pessoa;
@@ -124,5 +129,18 @@ export class CreateComponent implements OnInit {
 
   sumirMsg() {
     this.aparecerMsg = false;
+  }
+
+  verificarCpf(control : FormControl) : {[validacao : string] : boolean}{
+    if(control.value && validaCpf(control.value)){
+      return {'cpfInvalido' : true};
+    }
+    return null;
+  }
+  verificarTel(control : FormControl) : {[validacao : string] : boolean}{
+    if(validaTelefone(control.value && control.value)){
+      return {'telInvalido' : true};
+    }
+    return null;
   }
 }
