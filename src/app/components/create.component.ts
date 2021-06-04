@@ -132,13 +132,13 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   verificarCpf(control : FormControl) : {[validacao : string] : boolean}{
-    if(control.value && validaCpf(control.value)){
+    if(!validaCpf(control.value)){
       return {'cpfInvalido' : true};
     }
     return null;
   }
   verificarTel(control : FormControl) : {[validacao : string] : boolean}{
-    if(validaTelefone(control.value && control.value)){
+    if(!validaTelefone(control.value)){
       return {'telInvalido' : true};
     }
     return null;

@@ -11,6 +11,14 @@
     <div class="form-group">
       <label>Nome: </label>
       <input type="text" class="form-control" formControlName="nome" required />
+      <span
+        *ngIf="
+          !pessoaForm.get('nome').valid &&
+          pessoaForm.get('nome').touched
+        "
+        class="badge badge-danger"
+        >Nome Inválido!</span
+      >
     </div>
     <div class="form-group">
       <label>Telefone: </label>
@@ -27,7 +35,7 @@
           !pessoaForm.get('telefone').valid &&
           pessoaForm.get('telefone').touched
         "
-        class="badge badge-warning"
+        class="badge badge-danger"
         >Telefone Inválido!</span
       >
     </div>
@@ -42,8 +50,8 @@
         required
       />
       <span
-        *ngIf="!pessoaForm.get('cpf').valid"
-        class="badge badge-warning"
+        *ngIf="!pessoaForm.get('cpf').valid && pessoaForm.get('cpf').touched"
+        class="badge badge-danger"
         >CPF Inválido!</span
       >
     </div>
@@ -67,6 +75,7 @@
         type="submit"
         [value]="pessoa ? 'Atualizar' : 'Adicionar'"
         class="btn btn-primary"
+        [disabled]="pessoaForm.invalid"
       />
     </div>
   </form>
