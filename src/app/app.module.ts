@@ -14,6 +14,9 @@ import { CreateService } from './services/create.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ModalDialogModule } from 'ngx-modal-dialog';
 import { ModalComponent } from './components/modal.component';
+import { FormataCpfPipe } from './pipes/formata-cpf.pipe';
+import { FormataTelefonePipe } from './pipes/formata-telefone.pipe';
+import { FormataNomePipe } from './pipes/formata-nome.pipe';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 @NgModule({
@@ -21,7 +24,10 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     AppComponent,
     IndexComponent,
     CreateComponent,
-    ModalComponent
+    ModalComponent,
+    FormataCpfPipe,
+    FormataTelefonePipe,
+    FormataNomePipe
   ],
   entryComponents: [
     ModalComponent

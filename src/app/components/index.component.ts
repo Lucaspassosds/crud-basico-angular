@@ -2,7 +2,6 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit, ViewContainerRef } from "@angular/core";
 import { Pessoa } from "../models/models";
 import { Router } from "@angular/router";
-import { formataCPF, formataTelefone } from "../utils/utils";
 import { IndexService } from "../services/index.service";
 import { CreateService } from "../services/create.service";
 import { ModalDialogService } from "ngx-modal-dialog";
@@ -50,9 +49,6 @@ export class IndexComponent implements OnInit {
   listarPessoas() {
     this.service.listar().subscribe((res) => {
       Object.values(res).forEach((pessoa: Pessoa) => {
-        const { cpf, telefone } = pessoa;
-        pessoa.cpf = formataCPF(cpf);
-        pessoa.telefone = formataTelefone(telefone);
         this.pessoas.push(pessoa);
         this.filterPessoas = this.pessoas;
       });

@@ -73,7 +73,6 @@ export class CreateComponent implements OnInit, OnDestroy {
       };
       return this.service.atualizar(data).subscribe((pessoa) => {
         console.log(pessoa);
-        sessionStorage.setItem("pessoa_" + id, JSON.stringify(pessoa));
         this.nomeAntigo = nome;
         this.aparecerMsg = true;
       });
@@ -96,11 +95,11 @@ export class CreateComponent implements OnInit, OnDestroy {
       )
       .subscribe((pessoa) => {
         if (JSON.stringify(pessoa) === "[]") {
+          console.log('');
           return;
         }
         console.log(pessoa);
         const { id }: any = pessoa;
-        sessionStorage.setItem("pessoa_" + id, JSON.stringify(pessoa));
         this.nomeAntigo = nome;
         this.pessoaForm.reset();
         this.cursosSelecionados.clear();
@@ -132,13 +131,13 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   verificarCpf(control : FormControl) : {[validacao : string] : boolean}{
-    if(!validaCpf(control.value)){
+    if(control.value && !validaCpf(control.value)){
       return {'cpfInvalido' : true};
     }
     return null;
   }
   verificarTel(control : FormControl) : {[validacao : string] : boolean}{
-    if(!validaTelefone(control.value)){
+    if(control.value && !validaTelefone(control.value)){
       return {'telInvalido' : true};
     }
     return null;

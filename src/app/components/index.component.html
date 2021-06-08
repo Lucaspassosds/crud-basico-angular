@@ -28,9 +28,9 @@
         "
       >
         <ng-container *ngIf="!pessoa.isDeleted">
-          <td>{{ pessoa.nome }}</td>
-          <td>{{ pessoa.telefone }}</td>
-          <td>{{ pessoa.cpf }}</td>
+          <td>{{ pessoa.nome | formataNome }}</td>
+          <td>{{ pessoa.telefone | formataTelefone }}</td>
+          <td>{{ pessoa.cpf | formataCpf }}</td>
           <td>
             <button (click)="onEditarClick(pessoa)" class="btn btn-primary">
               Editar

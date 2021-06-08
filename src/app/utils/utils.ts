@@ -1,18 +1,3 @@
-export function formataCPF(cpf: string): string {
-  //retira os caracteres indesejados...
-  cpf = cpf.replace(/[^\d]/g, "");
-
-  //realizar a formatação...
-  return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-}
-
-export function formataTelefone(telefone: string): string {
-  telefone = telefone.replace(/\D/g, ""); //Remove tudo o que não é dígito
-  telefone = telefone.replace(/^(\d{2})(\d)/g, "($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos
-  telefone = telefone.replace(/(\d)(\d{4})$/, "$1-$2"); //Coloca hífen entre o quarto e o quinto dígitos
-  return telefone;
-}
-
 export function validaTelefone(tel : string) : boolean {
     return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(tel);
 }
