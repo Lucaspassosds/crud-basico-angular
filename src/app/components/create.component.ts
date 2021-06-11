@@ -18,7 +18,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   cursos: Curso[];
   cursosSelecionados: Set<Curso>;
   pessoa: Pessoa;
-  pessoaForm : FormGroup;
+  pessoaForm: FormGroup;
   nomeAntigo: string;
   aparecerMsg: boolean;
   message: string;
@@ -27,11 +27,17 @@ export class CreateComponent implements OnInit, OnDestroy {
   constructor(private service: CreateService, private route: ActivatedRoute) {
     this.aparecerMsg = false;
     this.cursos = [];
-    this.cursosSelecionados  = new Set();
+    this.cursosSelecionados = new Set();
     this.pessoaForm = new FormGroup({
       nome: new FormControl("", Validators.required),
-      telefone: new FormControl("", [Validators.required, this.verificarTel.bind(this)]),
-      cpf: new FormControl("", [Validators.required, this.verificarCpf.bind(this)]),
+      telefone: new FormControl("", [
+        Validators.required,
+        this.verificarTel.bind(this),
+      ]),
+      cpf: new FormControl("", [
+        Validators.required,
+        this.verificarCpf.bind(this),
+      ]),
     });
   }
 
@@ -53,14 +59,13 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
   }
   ngOnDestroy() {
-    if(this.pessoaSubscription)
-    this.pessoaSubscription.unsubscribe();
+    if (this.pessoaSubscription) this.pessoaSubscription.unsubscribe();
   }
 
   onSubmit() {
     console.log(this.pessoaForm.getRawValue());
     const { nome, telefone, cpf } = this.pessoaForm.getRawValue();
-    if(nome == '' || telefone == '' || cpf == '') return;
+    if (nome == "" || telefone == "" || cpf == "") return;
     const cursosPessoa = Array.from(this.cursosSelecionados);
     if (this.pessoa) {
       const { id } = this.pessoa;
@@ -83,33 +88,21 @@ export class CreateComponent implements OnInit, OnDestroy {
       cpf,
       cursos: cursosPessoa,
     };
-    return this.service
-      .criar(data)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          if (error.status === 400) {
-            alert(error.error.message);
-          }
-          return of([]);
-        })
-      )
-      .subscribe((pessoa) => {
-        if (JSON.stringify(pessoa) === "[]") {
-          console.log('');
-          return;
-        }
-        console.log(pessoa);
-        const { id }: any = pessoa;
-        this.nomeAntigo = nome;
-        this.pessoaForm.reset();
-        this.cursosSelecionados.clear();
-        this.aparecerMsg = true;
-      });
+    return this.service.criarPessoa(data).subscribe((pessoa) => {
+      if (JSON.stringify(pessoa) === "[]") {
+        return;
+      }
+      console.log(pessoa);
+      this.nomeAntigo = nome;
+      this.pessoaForm.reset();
+      this.cursosSelecionados.clear();
+      this.aparecerMsg = true;
+    });
   }
 
   getCursos() {
     this.service.listar().subscribe((res) => {
-      Object.values(res).forEach((pessoa) => this.cursos.push(pessoa));
+      Object.values(res).forEach((curso) => this.cursos.push(curso));
     });
   }
 
@@ -130,15 +123,15 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.aparecerMsg = false;
   }
 
-  verificarCpf(control : FormControl) : {[validacao : string] : boolean}{
-    if(control.value && !validaCpf(control.value)){
-      return {'cpfInvalido' : true};
+  verificarCpf(control: FormControl): { [validacao: string]: boolean } {
+    if (control.value && !validaCpf(control.value)) {
+      return { cpfInvalido: true };
     }
     return null;
   }
-  verificarTel(control : FormControl) : {[validacao : string] : boolean}{
-    if(control.value && !validaTelefone(control.value)){
-      return {'telInvalido' : true};
+  verificarTel(control: FormControl): { [validacao: string]: boolean } {
+    if (control.value && !validaTelefone(control.value)) {
+      return { telInvalido: true };
     }
     return null;
   }

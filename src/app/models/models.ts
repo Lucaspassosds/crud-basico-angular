@@ -1,5 +1,5 @@
 export type Pessoa = {
-    id: Number,
+    id?: Number,
     nome: string,
     cpf: string,
     telefone: string,
@@ -8,8 +8,9 @@ export type Pessoa = {
 }
 
 export type Curso = {
-    id: Number, 
+    id?: Number, 
     nome: string,
     pessoas?: Array<Pessoa>,
+    isEditando?: boolean
 }
   

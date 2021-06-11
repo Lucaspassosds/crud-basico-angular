@@ -1,0 +1,72 @@
+<div *ngIf="cursos.length >= 1; else no_course">
+  <h3 align="center">Lista de Cursos</h3>
+  <form class="form-inline waves-light" mdbWavesEffect>
+    <div class="md-form mt-0 col-md-10">
+      <input
+        class="form-control mr-sm-2"
+        style="width: 100%"
+        type="text"
+        placeholder="Adicionar"
+        (change)="onNovoCursoNomeChange($event)"
+      />
+    </div>
+    <button (click)="onAddCurso()" class="btn btn-primary">
+      Adicionar
+    </button>
+  </form>
+  <table class="table table-striped" style="margin-top: 20px">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Qtd. Pessoas matriculadas</th>
+        <th colspan="2"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="
+          let curso of cursos
+            | paginate: { itemsPerPage: 6, currentPage: page };
+          let i = index
+        "     
+      >
+          <td>
+            <span *ngIf="!curso.isEditando">{{ curso.nome }}</span>
+            <input
+              *ngIf="curso.isEditando"
+              type="text"
+              [value]="curso.nome"
+              placeholder="Insira um novo nome para o curso..."
+              (change)="onNomeChange($event)"
+            />
+          </td>
+          <td></td>
+          <td *ngIf="!curso.isEditando; else editing_buttons">
+            <button (click)="onEditarClick(i)" class="btn btn-primary">
+              Editar
+            </button>
+          </td>
+          <ng-template #editing_buttons>
+            <td>
+              <button (click)="onConfirmarClick(curso.id, i)" class="btn btn-success">
+                Confirmar
+              </button>
+            </td>
+            <td>
+              <button (click)="onCancelarClick(i)" class="btn btn-danger">
+                Cancelar
+              </button>
+            </td>
+          </ng-template>
+      </tr>
+    </tbody>
+  </table>
+  <pagination-controls
+    (pageChange)="page = $event"
+    previousLabel="Anterior"
+    nextLabel="Próximo"
+  ></pagination-controls>
+</div>
+<ng-template #no_course>
+  <h3 align="center">Ainda não há cursos...</h3>
+</ng-template>

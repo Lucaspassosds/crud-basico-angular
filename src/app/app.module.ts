@@ -17,6 +17,7 @@ import { ModalComponent } from './components/modal.component';
 import { FormataCpfPipe } from './pipes/formata-cpf.pipe';
 import { FormataTelefonePipe } from './pipes/formata-telefone.pipe';
 import { FormataNomePipe } from './pipes/formata-nome.pipe';
+import { CursosComponent } from './components/cursos.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 @NgModule({
@@ -27,7 +28,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     ModalComponent,
     FormataCpfPipe,
     FormataTelefonePipe,
-    FormataNomePipe
+    FormataNomePipe,
+    CursosComponent,
   ],
   entryComponents: [
     ModalComponent

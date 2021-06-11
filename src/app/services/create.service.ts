@@ -1,6 +1,9 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
+import { of } from "rxjs/observable/of";
+import { catchError } from "rxjs/operators";
+import { Curso, Pessoa } from "../models/models";
 
 @Injectable()
 export class CreateService {
@@ -21,11 +24,35 @@ export class CreateService {
     return this.http.get(`${this.apiURL}/cursos`);
   }
 
-  atualizar(data: Object) {
-    return this.http.put(`${this.apiURL}/pessoa`, data);
+  atualizar(pessoa: Pessoa) {
+    return this.http.put(`${this.apiURL}/pessoa`, pessoa);
   }
 
-  criar(data: Object) {
-    return this.http.post(`${this.apiURL}/pessoa`, data);
+  criarPessoa(pessoa: Pessoa) {
+    return this.http.post(`${this.apiURL}/pessoa`, pessoa)
+    .pipe(
+      catchError((res: HttpErrorResponse) => {
+        if (res.status === 400) {
+          alert(res.error.message);
+        }
+        return of([]);
+      })
+    );
+  }
+
+  criarCurso(curso: Curso) {
+    return this.http.post(`${this.apiURL}/curso`, curso)
+    .pipe(
+      catchError((res: HttpErrorResponse) => {
+        if (res.status === 400) {
+          alert(res.error.message);
+        }
+        return of([]);
+      })
+    );
+  }
+
+  atualizarCurso(curso: Curso){
+    return this.http.put(`${this.apiURL}/curso`, curso);
   }
 }

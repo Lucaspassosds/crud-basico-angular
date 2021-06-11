@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="pessoas.length >= 1; else no_people">
   <h3 align="center">Lista de Pessoas</h3>
   <form class="form-inline waves-light" mdbWavesEffect>
     <div class="md-form mt-0 col-md-12">
@@ -11,13 +11,16 @@
       />
     </div>
   </form>
-  <table class="table table-striped" style="margin-top: 20px">
+  <table
+    class="table table-striped"
+    style="margin-top: 20px"
+  >
     <thead>
       <tr>
         <th>Nome</th>
         <th>Telefone</th>
         <th>Número do CPF</th>
-        <th colSpan="2"></th>
+        <th colspan="2"></th>
       </tr>
     </thead>
     <tbody>
@@ -51,3 +54,6 @@
     nextLabel="Próximo"
   ></pagination-controls>
 </div>
+<ng-template #no_people>
+  <h3 align="center">Ainda não há pessoas...</h3>
+</ng-template>
