@@ -33,7 +33,6 @@ export class CursosComponent implements OnInit {
           this.service.getAlunosCurso(curso).subscribe((quantidade: number) => {
             curso.quantidadeAlunos = quantidade;
             this.cursos.push(curso);
-            console.log(curso);
           });
         })
       );
@@ -48,17 +47,9 @@ export class CursosComponent implements OnInit {
   onAddCurso() {
     this.service
       .criarCurso({ nome: this.novoCursoNome })
-      .subscribe((res) => {
+      .subscribe(() => {
         this.cursos.push({ nome: this.novoCursoNome });
       });
-  }
-
-  onEditarClick(cursoIndex : number) {
-    this.cursos[cursoIndex].isEditando = true;
-  }
-
-  onCancelarClick(cursoIndex : number) {
-    this.cursos[cursoIndex].isEditando = false;
   }
 
   onNomeChange(e : Event){
@@ -67,13 +58,15 @@ export class CursosComponent implements OnInit {
     this.cursoEditadoNome = value;
   }
 
-  onConfirmarClick(id: number, cursoIndex : number) {
+  onConfirmarClick(id: number) {
+    if(this.cursoEditadoNome === '') return alert('Preencha um nome para o curso!');
     this.service
       .atualizarCurso({ nome: this.cursoEditadoNome, id })
-      .subscribe((res) => {
-        console.log(res);
-        this.cursos[cursoIndex].isEditando = false;
-        this.cursos[cursoIndex].nome = this.cursoEditadoNome;
+      .subscribe(() => {
+        const curso = this.cursos.find(curso => curso.id === id);
+        const index = this.cursos.indexOf(curso);
+        this.cursos[index].isEditando = false;
+        this.cursos[index].nome = this.cursoEditadoNome;
       });
   }
 }

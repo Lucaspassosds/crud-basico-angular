@@ -41,7 +41,7 @@
           </td>
           <td>{{ curso.quantidadeAlunos }}</td>
           <td *ngIf="!curso.isEditando; else editing_buttons">
-            <button (click)="onEditarClick(i)" class="btn btn-primary">
+            <button (click)="curso.isEditando = true" class="btn btn-primary">
               Editar
             </button>
           </td>
@@ -50,7 +50,7 @@
               <button (click)="onConfirmarClick(curso.id, i)" class="btn btn-success">
                 Confirmar
               </button>
-              <button (click)="onCancelarClick(i)" class="btn btn-danger">
+              <button (click)="curso.isEditando = false" class="btn btn-danger">
                 Cancelar
               </button>
             </td>
