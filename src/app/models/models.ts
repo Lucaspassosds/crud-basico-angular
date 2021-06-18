@@ -11,6 +11,7 @@ export type Curso = {
     id?: Number, 
     nome: string,
     pessoas?: Array<Pessoa>,
-    isEditando?: boolean
+    isEditando?: boolean,
+    quantidadeAlunos?: Number,
 }
   

@@ -23,13 +23,18 @@ export class CursosComponent implements OnInit {
     this.listarCursos();
   }
 
+  //isso aqui ficou muito feio
   listarCursos() {
     this.service
       .listar()
       .subscribe((res) =>
         Object.values(res).forEach((curso : Curso) => {
           curso.isEditando = false;
-          this.cursos.push(curso);
+          this.service.getAlunosCurso(curso).subscribe((quantidade: number) => {
+            curso.quantidadeAlunos = quantidade;
+            this.cursos.push(curso);
+            console.log(curso);
+          });
         })
       );
   }

@@ -55,4 +55,8 @@ export class CreateService {
   atualizarCurso(curso: Curso){
     return this.http.put(`${this.apiURL}/curso`, curso);
   }
+
+  getAlunosCurso(curso: Curso){
+    return this.http.get(`${this.apiURL}/curso/qtd-alunos/${curso.id}`);
+  }
 }

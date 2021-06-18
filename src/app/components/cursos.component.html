@@ -19,7 +19,6 @@
       <tr>
         <th>Nome</th>
         <th>Qtd. Pessoas matriculadas</th>
-        <th colspan="2"></th>
       </tr>
     </thead>
     <tbody>
@@ -40,7 +39,7 @@
               (change)="onNomeChange($event)"
             />
           </td>
-          <td></td>
+          <td>{{ curso.quantidadeAlunos }}</td>
           <td *ngIf="!curso.isEditando; else editing_buttons">
             <button (click)="onEditarClick(i)" class="btn btn-primary">
               Editar
@@ -51,8 +50,6 @@
               <button (click)="onConfirmarClick(curso.id, i)" class="btn btn-success">
                 Confirmar
               </button>
-            </td>
-            <td>
               <button (click)="onCancelarClick(i)" class="btn btn-danger">
                 Cancelar
               </button>
